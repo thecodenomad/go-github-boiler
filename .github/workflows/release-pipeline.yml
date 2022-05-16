@@ -22,3 +22,6 @@ jobs:
       # Bump version
       - name: Git Version
         uses: codacy/git-version@2.2.0
+        with:
+          dev-branch: "develop"
+          release-branch: "main"
