@@ -29,5 +29,7 @@ jobs:
       # Bump Version
       - name: Tag Release
         run: |
+          git config --global user.email "autobot@thecodenomad.com"
+          git config --global user.name "Autobot"
           git tag -a "v${VERSION}" -m "Releasing version ${VERSION}"
           git push origin "v${VERSION}"
