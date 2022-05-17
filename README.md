@@ -5,5 +5,4 @@ a basic pipeline for vetting/linting, testing.
 ---
 
 ## TODO
-~~1) Add Semantic versioning~~
-2) Add Dockerization elements 
+1) Add Dockerization elements 
