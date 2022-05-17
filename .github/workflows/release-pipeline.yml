@@ -15,23 +15,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      # Checkout the latest
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      # Get version
-      - name: Git Version
-        uses: codacy/git-version@2.2.0
+      # Checkouts the codez
+      - uses: actions/checkout@v2
         with:
-          dev-branch: "develop"
-          release-branch: "main"
+          fetch-depth: '0'
 
-      # Bump Version
-      - name: Tag Release
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --global user.email "autobot@thecodenomad.com"
-          git config --global user.name "Autobot"
-          git tag -a "v${VERSION}" -m "Releasing version ${VERSION}"
-          git push origin "v${VERSION}"
+      # Do the version bump jig
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          DEFAULT_BUMP: "minor"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
