@@ -19,9 +19,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Bump version
+      # Get version
       - name: Git Version
         uses: codacy/git-version@2.2.0
         with:
           dev-branch: "develop"
           release-branch: "main"
+
+      # Bump Version
+      - name: Tag Release
+        run: |
+          git tag -a "v${VERSION}" -m "Releasing version ${VERSION}"
+          git push origin "v${VERSION}"
