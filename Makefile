@@ -39,7 +39,7 @@ docker: .work/docker_build
 .PHONY: docker-run
 docker-run: .work/docker_build
 	export VERSION=$(cat .work/docker_build)
-	docker run boiler:${VERSION}
+	docker run go-github-boiler:${VERSION}
 
 .PHONY: lint
 lint:
