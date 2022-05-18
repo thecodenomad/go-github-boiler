@@ -29,6 +29,8 @@ covreport: clean covtest
 .PHONY: docker
 docker: .work/docker_build
 .work/docker_build: .work/main
+	which docker
+	docker --version
 	docker build -f docker/Dockerfile . -t boiler:local
 	touch .work/docker_build
 
