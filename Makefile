@@ -4,15 +4,19 @@ ifndef VERBOSE
 .SILENT:
 endif
 
+# Work directory
+.work:
+	mkdir -p .work
+
 # Targets
 .PHONY: build
 build: main
-main:
-	go build -o main main.go
+.work/main: .work
+	go build -o .work/main main.go
 
 .PHONY: clean
 clean:
-	rm -rf coverage.out coverage.html main
+	rm -rf coverage.out coverage.html main .work
 
 .PHONY: covtest
 covtest: clean
@@ -21,6 +25,18 @@ covtest: clean
 .PHONY: covreport
 covreport: clean covtest
 	go tool cover -html=coverage.out -o coverage.html
+
+.PHONY: docker
+docker: .work/docker_build
+.work/docker_build: .work/main
+	which docker
+	docker --version
+	docker build -f docker/Dockerfile . -t boiler:local
+	touch .work/docker_build
+
+.PHONY: docker-run
+docker-run: .work/docker_build
+	docker run boiler:local
 
 .PHONY: lint
 lint:
