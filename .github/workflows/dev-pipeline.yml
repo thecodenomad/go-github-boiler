@@ -30,7 +30,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc libgl1-mesa-dev xorg-dev docker
+          sudo apt-get install -y gcc libgl1-mesa-dev xorg-dev
 
       - name: Checkout code
         uses: actions/checkout@v2
