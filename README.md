@@ -8,14 +8,19 @@ a basic pipeline for:
 3) Testing
 4) Semantic Version bumping
 
+## Golang
+
+The pipeline is currently configured to have a matrix test against golang versions 1.17.x and 1.18.x.
+
 ## Vetting
 
-Vetting is currently provided by the built in `go vet`, and the execution in the pipeline is controlled by the makefile
+Vetting is currently provided by the built-in `go vet`, and the execution in the pipeline is controlled by the makefile
 `vet` target.
 
 ## Linting
 
-Linting is currently provided by golint, and the execution in the pipeline is controlled by the makefile `lint` target.
+Linting is currently provided by `golint`, and the execution in the pipeline is controlled by the makefile `lint` 
+target.
 
 ## Testing
 
@@ -26,16 +31,19 @@ Note that the makefile target `test` can easily be modified for the specifics of
 
 ## Semantic Versioning
 
-The pipeline for this boilerplate makes use of the [Github Tag Action](https://github.com/anothrNick/github-tag-action)
-defaulting to `patch` version bumps. The intention for major releases would be on the developer to tag the major and
-minor releases.
+The pipeline for this boilerplate makes use of the [Github Tag Action](https://github.com/anothrNick/github-tag-action).
+This can be controlled using a github secret `VERSION_BUMP`, if not set the action defaults to `minor` version bumps.
+
+For releasing major versions, this can quickly be changed via the Github secret associated with the repo, or an 
+organization, to avoid any manual tagging that may be necessary.
 
 ---
 
 # TODO
 
-One usesful part of a boilerplate would be the construction, and pushing of docker containers. So there are a few
+One useful part of a boilerplate would be the construction, and pushing of docker containers. So there are a few
 outstanding todos for this repo:
-1) Create a Dockerfile for use in housing the `main` executable
-2) Publish the Docker container using the version tag produced by the semantic version bump
+
+~~* Create a Dockerfile for use in housing the `main` executable~~
+* Publish the Docker container using the version tag produced by the semantic version bump
 
