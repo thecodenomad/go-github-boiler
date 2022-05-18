@@ -29,7 +29,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc libgl1-mesa-dev xorg-dev
+          sudo apt-get install -y gcc libgl1-mesa-dev xorg-dev docker
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -57,6 +57,12 @@ jobs:
               echo "Failed"
               exit 1
           fi
+
+      # Make sure docker can be build
+      - name: Build docker
+        run: |
+          make docker-run
+
       - name: Archive test results
         if: always()
         uses: actions/upload-artifact@v2
