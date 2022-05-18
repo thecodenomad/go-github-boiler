@@ -29,3 +29,10 @@ jobs:
           DEFAULT_BUMP: ${{ secrets.VERSION_BUMP }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
+
+      # Push tagged docker image to reference version
+      - name: Tag Container with Version
+        run: |
+          echo "${tag}"
+          echo "${tag}" | sed "s|v||g"
+          echo "Update current docker image with version tag"

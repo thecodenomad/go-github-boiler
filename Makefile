@@ -4,6 +4,9 @@ ifndef VERBOSE
 .SILENT:
 endif
 
+# Version is the current git hash being worked on
+VERSION=$(shell git rev-parse --short HEAD)
+
 # Work directory
 .work:
 	mkdir -p .work
@@ -29,14 +32,14 @@ covreport: clean covtest
 .PHONY: docker
 docker: .work/docker_build
 .work/docker_build: .work/main
-	which docker
-	docker --version
-	docker build -f docker/Dockerfile . -t boiler:local
-	touch .work/docker_build
+	echo "Creating docker image version: ${VERSION}"
+	docker build -f docker/Dockerfile . -t go-github-boiler:${VERSION}
+	echo "${VERSION}" > .work/docker_build
 
 .PHONY: docker-run
 docker-run: .work/docker_build
-	docker run boiler:local
+	export VERSION=$(cat .work/docker_build)
+	docker run boiler:${VERSION}
 
 .PHONY: lint
 lint:

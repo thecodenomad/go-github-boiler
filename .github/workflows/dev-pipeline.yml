@@ -52,10 +52,9 @@ jobs:
           totalCoverage=`go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+'`
           echo "Current test coverage : $totalCoverage %"
           if (( $(echo "$totalCoverage $TESTCOVERAGE_THRESHOLD" | awk '{print ($1 > $2)}') )); then
-              echo "OK"
+              echo "PASSED"
           else
-              echo "Current test coverage is below threshold. Please add more unit tests or adjust threshold to a lower value."
-              echo "Failed"
+              echo "FAILED: Current test coverage is below threshold. Please add more unit tests or adjust threshold to a lower value."
               exit 1
           fi
 
@@ -64,11 +63,23 @@ jobs:
         run: |
           make docker-run
 
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Docker Push
+        run: |
+          echo "Placeholder for pushing docker image" 
+          # docker push
+
       - name: Archive test results
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: coverage-report-${{ matrix.os }}-${{ matrix.go-version }}
           path: |
+            .work/docker_build
             coverage.out
             coverage.html
