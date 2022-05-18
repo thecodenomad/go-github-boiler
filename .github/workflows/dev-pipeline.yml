@@ -62,7 +62,7 @@ jobs:
       # Make sure docker can be build (for portability reasons instead of doing githubs auto-build)
       - name: Build docker
         run: |
-          make docker
+          make docker-run
 
       - name: Archive test results
         if: always()
