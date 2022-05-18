@@ -36,7 +36,7 @@ docker: .work/docker_build
 
 .PHONY: docker-run
 docker-run: .work/docker_build
-	docker run -it boiler:local
+	docker run boiler:local
 
 .PHONY: lint
 lint:
