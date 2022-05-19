@@ -41,12 +41,11 @@ jobs:
       - name: Tag Container with Version
         env:
           LOCAL: 0
-          tag: ${{ steps.version.outputs.tag }}
-          new_tag: ${{ steps.version.outputs.new_tag }}
+          VERSION_TAG: ${{ steps.version.outputs.tag }}
+          DOCKER_REPO: "codenomad/go-github-boiler"
         run: |
-          echo "New tag: ${new_tag}"
-          echo "Tag: ${tag}"
-          echo "Sanitized tag:"
-          echo "${tag}" | sed "s|v||g"
-          echo "Update current docker image with version tag"
-          # VERSION="${tag}" make docker-push
+          export CURR_HASH=$(git rev-parse --short HEAD)
+          export VERSION="$(echo "${VERSION_TAG}" | sed "s|v||g")"
+          docker pull ${DOCKER_REPO}:${CURR_HASH}
+          docker tag ${DOCKER_REPO}:${CURR_HASH} ${DOCKER_REPO}:${VERSION}
+          docker push ${DOCKER_REPO}:${VERSION}
