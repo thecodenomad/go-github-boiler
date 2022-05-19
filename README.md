@@ -7,6 +7,8 @@ a basic pipeline for:
 2) Linting
 3) Testing
 4) Semantic Version bumping
+5) Auto `deploy` to container
+6) Auto push of container image to Dockerhub
 
 ## Golang
 
@@ -32,18 +34,18 @@ Note that the makefile target `test` can easily be modified for the specifics of
 ## Semantic Versioning
 
 The pipeline for this boilerplate makes use of the [Github Tag Action](https://github.com/anothrNick/github-tag-action).
-This can be controlled using a github secret `VERSION_BUMP`, if not set the action defaults to `minor` version bumps.
+The type of version bump can be controlled using a github secret `VERSION_BUMP` established either at the repo or 
+organization level in github. If `VERSION_BUMP` isn't set the action defaults to `minor` version bumps.
 
-For releasing major versions, this can quickly be changed via the Github secret associated with the repo, or an 
-organization, to avoid any manual tagging that may be necessary.
+## Docker 
 
----
+The templating system is setup to build the Dockerfile located at `docker/Dockerfile`. The pipeline will automatically
+tag the release in github and use the same version to push built image to Dockerhub. Additionally, the pipeline
+will also automatically tag `latest` with passing builds.
 
-# TODO
+NOTE: In practice, production should _only_ use a versioned release. Adding the latest tag is an enabler for
+development environments. 
 
-One useful part of a boilerplate would be the construction, and pushing of docker containers. So there are a few
-outstanding todos for this repo:
+## License
 
-~~* Create a Dockerfile for use in housing the `main` executable~~
-* Publish the Docker container using the version tag produced by the semantic version bump
-
+MIT License

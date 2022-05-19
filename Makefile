@@ -6,13 +6,6 @@ endif
 
 DOCKER_REPO="codenomad/go-github-boiler"
 
-# Default to LOCAL builds unless explicity set to 0
-LOCAL ?= $(or ${local},1)
-VERSION ?= $(or ${version},$(shell git rev-parse --short HEAD))
-ifeq ($(LOCAL), 1)
-	VERSION="local"
-endif
-
 # Work directory
 .work:
 	mkdir -p .work
@@ -38,13 +31,11 @@ covreport: clean covtest
 .PHONY: docker
 docker: .work/docker_build
 .work/docker_build: .work/main
-	echo "Creating docker image version: ${VERSION}"
 	docker build -f docker/Dockerfile . -t ${DOCKER_REPO}
 	touch .work/docker_build
 
 .PHONY: docker-run
 docker-run: .work/docker_build
-	echo "Running go-github-boiler version: ${VERSION}"
 	docker run ${DOCKER_REPO}
 
 .PHONY: lint
