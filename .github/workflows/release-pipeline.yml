@@ -22,6 +22,14 @@ jobs:
         with:
           fetch-depth: '0'
 
+      # Make sure we can build/run the container
+      - name: Deploy to container
+        id: docker-build
+        run: |
+          make docker-run
+          export CURR_HASH=$(git rev-parse --short HEAD)
+          echo "::set-output name=CURR_HASH::${CURR_HASH}"
+
       # Do the version bump jig
       - name: Bump version and push tag
         id: version
@@ -37,15 +45,14 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      # Push tagged docker image to reference version
-      - name: Tag Container with Version
+      # Push docker image with version
+      - name: Push release to Dockerhub
         env:
           LOCAL: 0
           VERSION_TAG: ${{ steps.version.outputs.tag }}
-          DOCKER_REPO: "codenomad/go-github-boiler"
+          DOCKER_REPO: "${{ secrets.DOCKER_USER }}/go-github-boiler"
+          CURR_HASH: ${{ steps.docker-build.outputs.CURR_HASH }}
         run: |
-          export CURR_HASH=$(git rev-parse --short HEAD)
           export VERSION="$(echo "${VERSION_TAG}" | sed "s|v||g")"
-          docker pull ${DOCKER_REPO}:${CURR_HASH}
           docker tag ${DOCKER_REPO}:${CURR_HASH} ${DOCKER_REPO}:${VERSION}
           docker push ${DOCKER_REPO}:${VERSION}
