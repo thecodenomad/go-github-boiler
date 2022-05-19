@@ -6,9 +6,12 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  LOCAL: 0
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   release:
@@ -48,7 +51,6 @@ jobs:
       # Push docker image with version
       - name: Push release to Dockerhub
         env:
-          LOCAL: 0
           VERSION_TAG: ${{ steps.version.outputs.tag }}
           DOCKER_REPO: "${{ secrets.DOCKER_USER }}/go-github-boiler"
           CURR_HASH: ${{ steps.docker-build.outputs.CURR_HASH }}
