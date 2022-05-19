@@ -40,19 +40,12 @@ docker: .work/docker_build
 .work/docker_build: .work/main
 	echo "Creating docker image version: ${VERSION}"
 	docker build -f docker/Dockerfile . -t ${DOCKER_REPO}
-	docker tag ${DOCKER_REPO} ${DOCKER_REPO}:${VERSION}
-	echo "${VERSION}" > .work/docker_build
+	touch .work/docker_build
 
 .PHONY: docker-run
 docker-run: .work/docker_build
 	echo "Running go-github-boiler version: ${VERSION}"
-	docker run ${DOCKER_REPO}:${VERSION}
-
-.PHONY: docker-push
-docker-push: .work/docker_build
-	if [[ "${VERSION}" == "local" ]]; then echo "Running locally, won't push"; exit 1; fi
-	echo "Running go-github-boiler version: ${VERSION}"
-	docker push ${DOCKER_REPO}:${VERSION}
+	docker run ${DOCKER_REPO}
 
 .PHONY: lint
 lint:

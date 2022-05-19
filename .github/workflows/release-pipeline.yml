@@ -29,9 +29,7 @@ jobs:
       - name: Deploy to container
         id: docker-build
         run: |
-          make docker-run
-          export CURR_HASH=$(git rev-parse --short HEAD)
-          echo "::set-output name=CURR_HASH::${CURR_HASH}"
+          make docker
 
       # Do the version bump for the commit
       - name: Push Version Tag
@@ -54,7 +52,6 @@ jobs:
         env:
           VERSION_TAG: ${{ steps.version.outputs.tag }}
           DOCKER_REPO: "${{ secrets.DOCKER_USER }}/go-github-boiler"
-          CURR_HASH: ${{ steps.docker-build.outputs.CURR_HASH }}
         run: |
           export VERSION="$(echo "${VERSION_TAG}" | sed "s|v||g")"
           docker tag ${DOCKER_REPO} ${DOCKER_REPO}:${VERSION}
