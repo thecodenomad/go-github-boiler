@@ -1,4 +1,6 @@
-# Setup cruft
+#########################
+# Configuration Options #
+#########################
 
 ifndef VERBOSE
 .SILENT:
@@ -6,11 +8,17 @@ endif
 
 DOCKER_REPO="codenomad/go-github-boiler"
 
-# Work directory
+###################
+# Support Targets #
+###################
+
 .work:
 	mkdir -p .work
 
-# Targets
+#################
+# Build Targets #
+#################
+
 .PHONY: build
 build: main
 .work/main: .work
@@ -20,13 +28,13 @@ build: main
 clean:
 	rm -rf coverage.out coverage.html main .work
 
-.PHONY: covtest
-covtest: clean
-	go test -v -coverprofile=coverage.out ./...
-
 .PHONY: covreport
 covreport: clean covtest
 	go tool cover -html=coverage.out -o coverage.html
+
+.PHONY: covtest
+covtest: clean
+	go test -v -coverprofile=coverage.out ./...
 
 .PHONY: docker
 docker: .work/docker_build
