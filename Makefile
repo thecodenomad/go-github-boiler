@@ -4,8 +4,14 @@ ifndef VERBOSE
 .SILENT:
 endif
 
-# Version is the current git hash being worked on
-VERSION=$(shell git rev-parse --short HEAD)
+DOCKER_REPO="go-github-boiler"
+
+# Default to LOCAL builds unless explicity set to 0
+LOCAL ?= $(or ${local},1)
+VERSION ?= $(or ${version},$(shell git rev-parse --short HEAD))
+ifeq ($(LOCAL), 1)
+	VERSION="local"
+endif
 
 # Work directory
 .work:
@@ -33,13 +39,19 @@ covreport: clean covtest
 docker: .work/docker_build
 .work/docker_build: .work/main
 	echo "Creating docker image version: ${VERSION}"
-	docker build -f docker/Dockerfile . -t go-github-boiler:${VERSION}
+	docker build -f docker/Dockerfile . -t ${DOCKER_REPO}:${VERSION}
 	echo "${VERSION}" > .work/docker_build
 
 .PHONY: docker-run
 docker-run: .work/docker_build
-	export VERSION=$(cat .work/docker_build)
-	docker run go-github-boiler:${VERSION}
+	echo "Running go-github-boiler version: ${VERSION}"
+	docker run ${DOCKER_REPO}:${VERSION}
+
+.PHONY: docker-push
+docker-push: .work/docker_build
+	if [[ "${VERSION}" == "local" ]]; then echo "Running locally, won't push"; exit 1; fi
+	echo "Running go-github-boiler version: ${VERSION}"
+	docker push ${DOCKER_REPO}:${VERSION}
 
 .PHONY: lint
 lint:

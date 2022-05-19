@@ -58,6 +58,31 @@ jobs:
               exit 1
           fi
 
+      - name: Archive test results
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifacts-${{ matrix.os }}-${{ matrix.go-version }}
+          path: |
+            coverage.out
+            coverage.html
+
+  # This is more of an example of how to push the container to dockerhub.
+  # Ideally, the container would be built as a part of the build process, test would run within that
+  # container, and the release process would retag that build container with the release version.
+  docker-deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.18.x
+
       # Make sure docker can be build (for portability reasons instead of doing githubs auto-build)
       - name: Build docker
         run: |
@@ -70,16 +95,8 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Docker Push
+        env:
+          LOCAL: 0
         run: |
           echo "Placeholder for pushing docker image" 
-          # docker push
-
-      - name: Archive test results
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage-report-${{ matrix.os }}-${{ matrix.go-version }}
-          path: |
-            .work/docker_build
-            coverage.out
-            coverage.html
+          make docker-push
