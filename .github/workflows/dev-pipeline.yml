@@ -35,13 +35,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # Code vet
       - name: Vet
         run: |
           make vet
 
+      # Unittests
       - name: Run Unittests
         run: make covreport
 
+      # Coverage check
       # Ref: https://github.com/lluuiissoo/go-testcoverage
       - name: Quality Gate - Test coverage shall be above threshold
         env:
@@ -58,6 +61,11 @@ jobs:
               exit 1
           fi
 
+      #
+      # Integration test bucket would go here
+      #
+
+      # Capture test output
       - name: Archive test results
         if: always()
         uses: actions/upload-artifact@v2
