@@ -39,7 +39,8 @@ covreport: clean covtest
 docker: .work/docker_build
 .work/docker_build: .work/main
 	echo "Creating docker image version: ${VERSION}"
-	docker build -f docker/Dockerfile . -t ${DOCKER_REPO} -t ${DOCKER_REPO}:${VERSION}
+	docker build -f docker/Dockerfile . -t ${DOCKER_REPO}
+	docker tag ${DOCKER_REPO} ${DOCKER_REPO}:${VERSION}
 	echo "${VERSION}" > .work/docker_build
 
 .PHONY: docker-run
