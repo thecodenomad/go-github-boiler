@@ -4,7 +4,7 @@ ifndef VERBOSE
 .SILENT:
 endif
 
-DOCKER_REPO="go-github-boiler"
+DOCKER_REPO="codenomad/go-github-boiler"
 
 # Default to LOCAL builds unless explicity set to 0
 LOCAL ?= $(or ${local},1)
