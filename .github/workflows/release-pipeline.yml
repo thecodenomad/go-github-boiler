@@ -57,5 +57,5 @@ jobs:
           CURR_HASH: ${{ steps.docker-build.outputs.CURR_HASH }}
         run: |
           export VERSION="$(echo "${VERSION_TAG}" | sed "s|v||g")"
-          docker tag ${DOCKER_REPO}:${CURR_HASH} ${DOCKER_REPO}:${VERSION}
+          docker tag ${DOCKER_REPO} ${DOCKER_REPO}:${VERSION}
           docker push -a ${DOCKER_REPO}
