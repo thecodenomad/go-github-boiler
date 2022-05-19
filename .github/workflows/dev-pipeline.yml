@@ -52,23 +52,40 @@ jobs:
           totalCoverage=`go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+'`
           echo "Current test coverage : $totalCoverage %"
           if (( $(echo "$totalCoverage $TESTCOVERAGE_THRESHOLD" | awk '{print ($1 > $2)}') )); then
-              echo "OK"
+              echo "PASSED"
           else
-              echo "Current test coverage is below threshold. Please add more unit tests or adjust threshold to a lower value."
-              echo "Failed"
+              echo "FAILED: Current test coverage is below threshold. Please add more unit tests or adjust threshold to a lower value."
               exit 1
           fi
-
-      # Make sure docker can be build (for portability reasons instead of doing githubs auto-build)
-      - name: Build docker
-        run: |
-          make docker-run
 
       - name: Archive test results
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: coverage-report-${{ matrix.os }}-${{ matrix.go-version }}
+          name: artifacts-${{ matrix.os }}-${{ matrix.go-version }}
           path: |
             coverage.out
             coverage.html
+
+      # Make sure docker can be build (for portability reasons instead of doing githubs auto-build)
+      - name: Build docker
+        env:
+          LOCAL: 0
+        run: |
+          make docker-run
+
+      # We only need to push this as a part of a single matrix path
+      - name: Login to Docker Hub
+        if: ${{ matrix.go-version }} == 1.18.x
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Docker Push
+        if: ${{ matrix.go-version }} == 1.18.x
+        env:
+          LOCAL: 0
+        run: |
+          echo "Placeholder for pushing docker image" 
+          make docker-push

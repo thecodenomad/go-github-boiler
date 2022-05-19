@@ -4,6 +4,15 @@ ifndef VERBOSE
 .SILENT:
 endif
 
+DOCKER_REPO="codenomad/go-github-boiler"
+
+# Default to LOCAL builds unless explicity set to 0
+LOCAL ?= $(or ${local},1)
+VERSION ?= $(or ${version},$(shell git rev-parse --short HEAD))
+ifeq ($(LOCAL), 1)
+	VERSION="local"
+endif
+
 # Work directory
 .work:
 	mkdir -p .work
@@ -29,14 +38,20 @@ covreport: clean covtest
 .PHONY: docker
 docker: .work/docker_build
 .work/docker_build: .work/main
-	which docker
-	docker --version
-	docker build -f docker/Dockerfile . -t boiler:local
-	touch .work/docker_build
+	echo "Creating docker image version: ${VERSION}"
+	docker build -f docker/Dockerfile . -t ${DOCKER_REPO}:${VERSION}
+	echo "${VERSION}" > .work/docker_build
 
 .PHONY: docker-run
 docker-run: .work/docker_build
-	docker run boiler:local
+	echo "Running go-github-boiler version: ${VERSION}"
+	docker run ${DOCKER_REPO}:${VERSION}
+
+.PHONY: docker-push
+docker-push: .work/docker_build
+	if [[ "${VERSION}" == "local" ]]; then echo "Running locally, won't push"; exit 1; fi
+	echo "Running go-github-boiler version: ${VERSION}"
+	docker push ${DOCKER_REPO}:${VERSION}
 
 .PHONY: lint
 lint:
