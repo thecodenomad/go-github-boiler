@@ -24,6 +24,7 @@ jobs:
 
       # Do the version bump jig
       - name: Bump version and push tag
+        id: version
         uses: anothrNick/github-tag-action@1.36.0
         env:
           DEFAULT_BUMP: ${{ secrets.VERSION_BUMP }}
@@ -40,6 +41,8 @@ jobs:
       - name: Tag Container with Version
         env:
           LOCAL: 0
+          tag: ${{ steps.version.tag }}
+          new_tag: ${{ steps.version.new_tag }}
         run: |
           echo "New tag: ${new_tag}"
           echo "Tag: ${tag}"
