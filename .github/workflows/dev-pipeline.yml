@@ -69,12 +69,12 @@ jobs:
 
       # Make sure docker can be build (for portability reasons instead of doing githubs auto-build)
       - name: Build docker
-        if: ${{ matrix.go-version }} == 1.18.x
         env:
           LOCAL: 0
         run: |
           make docker-run
 
+      # We only need to push this as a part of a single matrix path
       - name: Login to Docker Hub
         if: ${{ matrix.go-version }} == 1.18.x
         uses: docker/login-action@v1
